@@ -1,20 +1,33 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8" />
-<title>Union Strike Folk Song</title>
-<link rel="stylesheet" href="style.css" type="text/css" />
-</head>
+    <head>
+        <meta charset="utf-8" />
+        <title>Union Strike Folk Song</title>
+        <link rel="stylesheet" href="style.css" type="text/css" />
+    </head>
 
-<body>
+    <body>
 
-<h1 id="title">Union Strike Folk Song</h1>
+        <h1 id="title">Union Strike Folk Song</h1>
 
-<video src="https://www.cs.tufts.edu/comp/20/butwehavethepower.mp4" id="butwehavethepower" controls></video>
-<div id="lyrics"></div>
+        <video src="https://www.cs.tufts.edu/comp/20/butwehavethepower.mp4" id="butwehavethepower" controls></video>
+        <div id="lyrics"></div>
 
-<script>
-  // Complete this section and create a CSS file named style.css
-</script>
-</body>
+        <script>
+            var words = ["Come gather round, children,", "It's high time ye learned", "\'Bout a hero named Homer", "And a devil named Burns.", "We'll march 'till we drop", "The girls and the fellas.", "We'll fight 'till the death", "Or else fold like umbrellas.", "So we'll march day and night", "By the big cooling tower.", "They have the plant", "But we have the power.", "Now do \"Classical Gas!\"", "So we'll march day and night", "By the big cooling tower.", "They have the plant", "But we have the power."];
+            
+            (function(){
+                var v = document.getElementById("butwehavethepower")
+                var t = document.getElementById("lyrics");
+                v.addEventListener("timeupdate",function(event){
+                    if (parseInt(v.currentTime) >= 6) t.innerHTML = words[0];
+                    if (parseInt(v.currentTime) >= 8) t.innerHTML = words[1];
+                    if (parseInt(v.currentTime) >= 10) t.innerHTML = words[2];
+                    if (parseInt(v.currentTime) >= 13) t.innerHTML = words[3];
+
+                }, false);
+                })(); 
+
+        </script>
+    </body>
 </html>
