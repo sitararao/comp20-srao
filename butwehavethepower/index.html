@@ -14,18 +14,67 @@
         <div id="lyrics"></div>
 
         <script>
-            var words = ["Come gather round, children,", "It's high time ye learned", "\'Bout a hero named Homer", "And a devil named Burns.", "We'll march 'till we drop", "The girls and the fellas.", "We'll fight 'till the death", "Or else fold like umbrellas.", "So we'll march day and night", "By the big cooling tower.", "They have the plant", "But we have the power.", "Now do \"Classical Gas!\"", "So we'll march day and night", "By the big cooling tower.", "They have the plant", "But we have the power."];
-            
+            // Array to store each line of lyrics
+            var words = ["Come gather round, children,",
+            "It's high time ye learned",
+            "\'Bout a hero named Homer",
+            "And a devil named Burns.",
+            "We'll march 'till we drop",
+            "The girls and the fellas.",
+            "We'll fight 'till the death",
+            "Or else fold like umbrellas.",
+            "So we'll march day and night",
+            "By the big cooling tower.",
+            "They have the plant",
+            "But we have the power.",
+            "Now do \"Classical Gas!\"",
+            "So we'll march day and night",
+            "By the big cooling tower.",
+            "They have the plant",
+            "But we have the power."];
+
             (function(){
                 var v = document.getElementById("butwehavethepower")
                 var t = document.getElementById("lyrics");
                 v.addEventListener("timeupdate",function(event){
+
+                    // used to find time to show each lyric
+                    //t.innerHTML = parseInt(v.currentTime);
+
+                    // at the correct time, display the corresponding lyric
                     if (parseInt(v.currentTime) >= 6) t.innerHTML = words[0];
                     if (parseInt(v.currentTime) >= 8) t.innerHTML = words[1];
                     if (parseInt(v.currentTime) >= 10) t.innerHTML = words[2];
                     if (parseInt(v.currentTime) >= 13) t.innerHTML = words[3];
+                    if (parseInt(v.currentTime) >= 17) t.innerHTML = words[4];
+                    if (parseInt(v.currentTime) >= 19) t.innerHTML = words[5];
+                    if (parseInt(v.currentTime) >= 21) t.innerHTML = words[6];
+                    if (parseInt(v.currentTime) >= 23) t.innerHTML = words[7];
 
-                }, false);
+                    if (parseInt(v.currentTime) >= 27) t.innerHTML = "";
+
+                    if (parseInt(v.currentTime) >= 38) t.innerHTML = words[8];
+                    if (parseInt(v.currentTime) >= 40) t.innerHTML = words[9];
+                    if (parseInt(v.currentTime) >= 43) t.innerHTML = words[10];
+                    if (parseInt(v.currentTime) >= 45) t.innerHTML = words[11];
+
+                    if (parseInt(v.currentTime) >= 50) t.innerHTML = "";
+
+                    if (parseInt(v.currentTime) >= 53) t.innerHTML = words[12];
+
+                    if (parseInt(v.currentTime) >= 55) t.innerHTML = "";
+
+                    if (parseInt(v.currentTime) >= 72) t.innerHTML = words[13];
+                    if (parseInt(v.currentTime) >= 75) t.innerHTML = words[14];
+                    if (parseInt(v.currentTime) >= 77) t.innerHTML = words[15];
+                    if (parseInt(v.currentTime) >= 80) t.innerHTML = words[16];
+                    if (parseInt(v.currentTime) >= 82) t.innerHTML = words[13];
+                    if (parseInt(v.currentTime) >= 84) t.innerHTML = words[14];
+                    if (parseInt(v.currentTime) >= 87) t.innerHTML = words[15];
+                    if (parseInt(v.currentTime) >= 89) t.innerHTML = words[16];
+                    if (parseInt(v.currentTime) >= 91) t.innerHTML = "";
+
+                });
                 })(); 
 
         </script>
