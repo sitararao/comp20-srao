@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <title>Lift Knockoff</title>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDi8OEnz9KhctL4HUBPhiqzb_4LFKpW3O0"></script>
+        <link href="style.css" rel="stylesheet" />
+
+        <script>
+            var myLat = 0;
+            var myLng = 0;
+            var myUserName = "Cq4NX9eE";    /////////////////////////
+            var me = new google.maps.LatLng(myLat, myLng);
+            var myOptions = {
+                zoom: 13, // The larger the zoom number, the bigger the zoom
+                center: me,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            var map;
+            var marker;
+            var infowindow = new google.maps.InfoWindow();
+
+
+            function init() {
+                map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+                getMyLocation();
+                      //////////////
+            }
+
+            function getMyLocation() {
+                if (navigator.geolocation) { // the navigator.geolocation object is supported on your browser
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        myLat = position.coords.latitude;
+                        myLng = position.coords.longitude;
+                        renderMap();
+
+                    });
+                }
+                else {
+                    alert("Geolocation not supported.");
+                }
+            }
+
+            function getRideInfo() {
+
+                // instantiate request
+                var request = new XMLHttpRequest();
+
+                // make request and set header
+                request.open("POST", "https://hans-moleman.herokuapp.com/rides", true);
+                request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+                // what to do with response
+                request.onreadystatechange = function() {
+
+                    if (request.readyState == 4 && request.status == 200) {
+                        var users = JSON.parse(request.responseText);
+                        console.log(users);
+
+                        if (users.vehicles) {
+                            showVehicles(users);
+                        }
+
+                        if (users.passengers) {
+                            showPassengers(users);
+                        }
+                    }
+
+                    else if (request.readyState == 4) {
+                        console.log("No data retrieved.");
+                    }
+                };
+
+                // send request
+                request.send("username=" + myUserName + "&lat=" + myLat + "&lng=" + myLng);
+                
+            }
+
+            function showVehicles() {
+
+            }
+
+            function showPassengers(users) {
+                //console.log(users);
+                for (count = 0; count < users.passengers.length; count++) {
+                    if (users.passengers[count].username == "WEINERMOBILE") {
+                        // do weinermobile thing
+                    }
+                    else {
+                        console.log(users.passengers[count].username);
+                        // do passenger thing
+                    }
+                }
+            }
+
+            function renderMap() {
+                me = new google.maps.LatLng(myLat, myLng);
+
+                // Update map and go there...
+                map.panTo(me);
+                
+                // Create a marker
+                marker = new google.maps.Marker({
+                    position: me,
+                    title: "Here I Am!"
+                });
+                marker.setMap(map);
+                    
+                // Open info window on click of marker
+                google.maps.event.addListener(marker, 'click', function() {
+                    infowindow.setContent(marker.title);
+                    infowindow.open(map, marker);
+                });
+
+                getRideInfo();
+            }
+        </script>
+    </head>
+    
+    <body onload="init()">
+        <div id="map_canvas"></div>
+    </body>
+</html>
