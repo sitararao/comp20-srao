@@ -19,7 +19,20 @@
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
             var map;
-            var marker;
+            var markers = {
+                  me: {
+                    icon: "egg.png"
+                  },
+                  riders: {
+                    icon: "bacon.png"
+                  },
+                  cars: {
+                    icon: "car.png"
+                  },
+                  wm: {
+                    icon: "weinermobile.png"
+                  }
+                };
             var infowindow = new google.maps.InfoWindow();
 
 
@@ -44,7 +57,7 @@
             }
 
             function getRideInfo() {
-
+                var weinermobile = false;
                 // instantiate request
                 var request = new XMLHttpRequest();
 
@@ -60,12 +73,14 @@
                         console.log(users);
 
                         if (users.vehicles) {
-                            showVehicles(users);
+                            weinermobile = showVehicles(users);
                         }
 
                         if (users.passengers) {
-                            showPassengers(users);
+                            weinermobile = showPassengers(users);
                         }
+
+                        return weinermobile;
                     }
 
                     else if (request.readyState == 4) {
@@ -83,16 +98,32 @@
             }
 
             function showPassengers(users) {
+                var weinermobile = false;
                 //console.log(users);
                 for (count = 0; count < users.passengers.length; count++) {
                     if (users.passengers[count].username == "WEINERMOBILE") {
-                        // do weinermobile thing
+                        weinermobile = true;
+                        var pos = new google.maps.LatLng(users.passengers[count].lat, users.passengers[count].lng);
+                        marker = new google.maps.Marker({
+                            position: pos,
+                            icon: "weinermobile.png",
+                            title: users.passengers[count].username
+                        });
                     }
+
                     else {
-                        console.log(users.passengers[count].username);
+                        var pos = new google.maps.LatLng(users.passengers[count].lat, users.passengers[count].lng);
+                        marker = new google.maps.Marker({
+                            position: pos,
+                            icon: "bacon.png",
+                            title: users.passengers[count].username
+                        });
+                        //console.log(users.passengers[count].username);
                         // do passenger thing
                     }
                 }
+
+                return weinermobile;
             }
 
             function renderMap() {
@@ -101,9 +132,18 @@
                 // Update map and go there...
                 map.panTo(me);
                 
+
+                var weinerHere = getRideInfo();
+                // if weinerhere get distance
+                // get closest (p/v) name + distance
+
+                //if weinerhere print both dists
+                //if no weiner just print closest user
+
                 // Create a marker
                 marker = new google.maps.Marker({
                     position: me,
+                    icon: "egg.png",
                     title: "Here I Am!"
                 });
                 marker.setMap(map);
@@ -114,7 +154,7 @@
                     infowindow.open(map, marker);
                 });
 
-                getRideInfo();
+                
             }
         </script>
     </head>
