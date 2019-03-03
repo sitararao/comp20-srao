@@ -70,7 +70,6 @@
 
                     if (request.readyState == 4 && request.status == 200) {
                         var users = JSON.parse(request.responseText);
-                        console.log(users);
 
                         if (users.vehicles) {
                             weinermobile = showVehicles(users);
@@ -99,7 +98,7 @@
 
             function showPassengers(users) {
                 var weinermobile = false;
-                //console.log(users);
+                console.log(users);
                 for (count = 0; count < users.passengers.length; count++) {
                     if (users.passengers[count].username == "WEINERMOBILE") {
                         weinermobile = true;
@@ -109,6 +108,7 @@
                             icon: "weinermobile.png",
                             title: users.passengers[count].username
                         });
+                        marker.setMap(map);
                     }
 
                     else {
@@ -118,6 +118,7 @@
                             icon: "bacon.png",
                             title: users.passengers[count].username
                         });
+                        marker.setMap(map);
                         //console.log(users.passengers[count].username);
                         // do passenger thing
                     }
