@@ -25,6 +25,7 @@
             var infowindow = new google.maps.InfoWindow();
 
 
+
             function init() {
                 map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
                 getMyLocation();
@@ -112,7 +113,7 @@
                     dists[users.vehicles[count].username] = google.maps.geometry.spherical.computeDistanceBetween(pos, me);
                     
                 }
-                console.log(dists);
+                //console.log(dists);
             }
 
             function showPassengers(users) {
@@ -166,36 +167,185 @@
                 map.panTo(me);
                 
 
-                getRideInfo();
-                if (dists["WEINERMOBILE"]) {
-                    weinerhere = "The Weinermobile is " + dists["WEINERMOBILE"] + "meters away!";
-                }
+                //getRideInfo();
 
-                var closestUser = "the closest user is " + findClosest() + " meters away.";
+                var request = new XMLHttpRequest();
 
-                contentString = closestUser + "</br>" + weinerHere;
-                marker = new google.maps.Marker({
-                    position: me,
-                    icon: "egg.png",
-                    title: "Here I Am!"
-                });
-                marker.setMap(map);
+                // make request and set header
+                request.open("POST", "https://hans-moleman.herokuapp.com/rides", true);
+                request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+                // what to do with response
+                request.onreadystatechange = function() {
+
+                    if (request.readyState == 4 && request.status == 200) {
+                        var users = JSON.parse(request.responseText);
+
+                        if (users.vehicles) {
+                            for (count = 0; count < users.vehicles.length; count++) {
+                                if (users.vehicles[count].username == "WEINERMOBILE") {
+                                    pos = new google.maps.LatLng(users.vehicles[count].lat, users.vehicles[count].lng);
+                                    marker = new google.maps.Marker({
+                                        position: pos,
+                                        icon: "weinermobile.png",
+                                        title: users.vehicles[count].username
+                                    });
+                                    marker.setMap(map);                        
+
+                                    google.maps.event.addListener(marker, 'click', function() {
+                                        infowindow.setContent(this.title);
+                                        infowindow.open(map, this);
+                                    });                        
+                                }
+
+                                else {
+                                    pos = new google.maps.LatLng(users.vehicles[count].lat, users.vehicles[count].lng);
+                                    marker = new google.maps.Marker({
+                                        position: pos,
+                                        icon: "car.png",
+                                        title: users.vehicles[count].username
+                                    });
+                                    marker.setMap(map);
+
+                                    google.maps.event.addListener(marker, 'click', function() {
+                                        infowindow.setContent(this.title);
+                                        infowindow.open(map, this);
+                                    }); 
+                                }
+
+                                dists[users.vehicles[count].username] = google.maps.geometry.spherical.computeDistanceBetween(pos, me);
+                            }
+                            console.log(dists);
+                            console.log(dists["WEINERMOBILE"]);
+
+                        }
+                        if (users.passengers) {
+                            for (count = 0; count < users.passengers.length; count++) {
+                                if (users.passengers[count].username == "WEINERMOBILE") {
+                                    pos = new google.maps.LatLng(users.passengers[count].lat, users.passengers[count].lng);
+                                    marker = new google.maps.Marker({
+                                        position: pos,
+                                        icon: "weinermobile.png",
+                                        title: users.passengers[count].username
+                                    });
+                                    marker.setMap(map);                        
+
+                                    google.maps.event.addListener(marker, 'click', function() {
+                                        infowindow.setContent(this.title);
+                                        infowindow.open(map, this);
+                                    });                        
+                                }
+
+                                else {
+                                    pos = new google.maps.LatLng(users.passengers[count].lat, users.passengers[count].lng);
+                                    marker = new google.maps.Marker({
+                                        position: pos,
+                                        icon: "bacon.png",
+                                        title: users.passengers[count].username
+                                    });
+                                    marker.setMap(map);
+
+                                    google.maps.event.addListener(marker, 'click', function() {
+                                        infowindow.setContent(this.title);
+                                        infowindow.open(map, this);
+                                    });
+                                    
+                                }
+
+                                dists[users.passengers[count].username] = google.maps.geometry.spherical.computeDistanceBetween(pos, me);
+                                
+                            }
+                        }
+
+                        if (dists["WEINERMOBILE"] != undefined) {
+                            weinerHere = "The Weinermobile is " + dists["WEINERMOBILE"] + "meters away!";
+                        }
+
+                        var close = 9999999;
+                        for (var key in dists) {
+                            if (dists[key] < close) {
+                                close = dists[key];
+                            }
+                        }
+
+                        var closestUser = "The closest user is " + close + " meters away.";
+
+                        contentString = closestUser + "</br>" + weinerHere;
+                        marker = new google.maps.Marker({
+                            position: me,
+                            icon: "egg.png",
+                            title: "Here I Am!"
+                        });
+                        marker.setMap(map);
+                            
+                        // Open info window on click of marker
+                        google.maps.event.addListener(marker, 'click', function() {
+                            infowindow.setContent(contentString);
+                            infowindow.open(map, this);
+                        });
+
+                    }
+
+                    else if (request.readyState == 4) {
+                        console.log("No data retrieved.");
+                    }
+                };
+
+                // send request
+                request.send("username=" + myUserName + "&lat=" + myLat + "&lng=" + myLng);
+
+
+
+
+
+
+
+                // console.log("printing dists");
+                // console.log(dists)
+                // console.log(dists["WEINERMOBILE"]);
+                
+
+                // if (dists["WEINERMOBILE"] != undefined) {
+                //     console.log(dists);
+                //     console.log(dists["WEINERMOBILE"]);
+                //     weinerHere = "The Weinermobile is " + dists["WEINERMOBILE"] + "meters away!";
+                // }
+
+                // var closestUser = "The closest user is " + findClosest() + " meters away.";
+
+                // contentString = closestUser + "</br>" + weinerHere;
+                // marker = new google.maps.Marker({
+                //     position: me,
+                //     icon: "egg.png",
+                //     title: "Here I Am!"
+                // });
+                // marker.setMap(map);
                     
-                // Open info window on click of marker
-                google.maps.event.addListener(marker, 'click', function() {
-                    infowindow.setContent(contentString);
-                    infowindow.open(map, this);
-                });
+                // // Open info window on click of marker
+                // google.maps.event.addListener(marker, 'click', function() {
+                //     infowindow.setContent(contentString);
+                //     infowindow.open(map, this);
+                // });
             }
 
             function findClosest() {
-                var close = 999999;
+                var close = 999999999;
 
-                for (count = 0; count < dists.length; count++) {
-                    if (dists[count] < close) {
-                        close = dists[count];
+                console.log(dists);
+                console.log(dists["WEINERMOBILE"]);
+
+                for (var key in dists) {
+                    if (dists[key] < close) {
+                        close = dists[key];
+                        console.log(dists[key] + "is closest");
                     }
                 }
+
+
+                // const vals = Object.values(dists);
+                // for (const val of vals) {
+                //     console.log(val);
+                // }
 
                 return close;
             }
