@@ -5,41 +5,29 @@
     <head>
         <title>Lift Knockoff</title>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDi8OEnz9KhctL4HUBPhiqzb_4LFKpW3O0"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDi8OEnz9KhctL4HUBPhiqzb_4LFKpW3O0&libraries=geometry"></script>
         <link href="style.css" rel="stylesheet" />
 
         <script>
             var myLat = 0;
             var myLng = 0;
-            var myUserName = "Cq4NX9eE";    /////////////////////////
+            var myUserName = "Cq4NX9eE";
             var me = new google.maps.LatLng(myLat, myLng);
+
             var myOptions = {
                 zoom: 13, // The larger the zoom number, the bigger the zoom
                 center: me,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
+
             var map;
-            var markers = {
-                  me: {
-                    icon: "egg.png"
-                  },
-                  riders: {
-                    icon: "bacon.png"
-                  },
-                  cars: {
-                    icon: "car.png"
-                  },
-                  wm: {
-                    icon: "weinermobile.png"
-                  }
-                };
+            var dists = {};
             var infowindow = new google.maps.InfoWindow();
 
 
             function init() {
                 map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
                 getMyLocation();
-                      //////////////
             }
 
             function getMyLocation() {
@@ -57,7 +45,6 @@
             }
 
             function getRideInfo() {
-                var weinermobile = false;
                 // instantiate request
                 var request = new XMLHttpRequest();
 
@@ -72,14 +59,11 @@
                         var users = JSON.parse(request.responseText);
 
                         if (users.vehicles) {
-                            weinermobile = showVehicles(users);
+                            showVehicles(users);
                         }
-
                         if (users.passengers) {
-                            weinermobile = showPassengers(users);
+                            showPassengers(users);
                         }
-
-                        return weinermobile;
                     }
 
                     else if (request.readyState == 4) {
@@ -92,56 +76,104 @@
                 
             }
 
-            function showVehicles() {
+            function showVehicles(users) {
+                console.log(users);
+                for (count = 0; count < users.vehicles.length; count++) {
+                    if (users.vehicles[count].username == "WEINERMOBILE") {
+                        pos = new google.maps.LatLng(users.vehicles[count].lat, users.vehicles[count].lng);
+                        marker = new google.maps.Marker({
+                            position: pos,
+                            icon: "weinermobile.png",
+                            title: users.vehicles[count].username
+                        });
+                        marker.setMap(map);                        
 
+                        google.maps.event.addListener(marker, 'click', function() {
+                            infowindow.setContent(this.title);
+                            infowindow.open(map, this);
+                        });                        
+                    }
+
+                    else {
+                        pos = new google.maps.LatLng(users.vehicles[count].lat, users.vehicles[count].lng);
+                        marker = new google.maps.Marker({
+                            position: pos,
+                            icon: "car.png",
+                            title: users.vehicles[count].username
+                        });
+                        marker.setMap(map);
+
+                        google.maps.event.addListener(marker, 'click', function() {
+                            infowindow.setContent(this.title);
+                            infowindow.open(map, this);
+                        }); 
+                    }
+
+                    dists[users.vehicles[count].username] = google.maps.geometry.spherical.computeDistanceBetween(pos, me);
+                    
+                }
+                console.log(dists);
             }
 
             function showPassengers(users) {
-                var weinermobile = false;
                 console.log(users);
+                var pos;
+
                 for (count = 0; count < users.passengers.length; count++) {
                     if (users.passengers[count].username == "WEINERMOBILE") {
-                        weinermobile = true;
-                        var pos = new google.maps.LatLng(users.passengers[count].lat, users.passengers[count].lng);
+                        pos = new google.maps.LatLng(users.passengers[count].lat, users.passengers[count].lng);
                         marker = new google.maps.Marker({
                             position: pos,
                             icon: "weinermobile.png",
                             title: users.passengers[count].username
                         });
-                        marker.setMap(map);
+                        marker.setMap(map);                        
+
+                        google.maps.event.addListener(marker, 'click', function() {
+                            infowindow.setContent(this.title);
+                            infowindow.open(map, this);
+                        });                        
                     }
 
                     else {
-                        var pos = new google.maps.LatLng(users.passengers[count].lat, users.passengers[count].lng);
+                        pos = new google.maps.LatLng(users.passengers[count].lat, users.passengers[count].lng);
                         marker = new google.maps.Marker({
                             position: pos,
                             icon: "bacon.png",
                             title: users.passengers[count].username
                         });
                         marker.setMap(map);
-                        //console.log(users.passengers[count].username);
-                        // do passenger thing
-                    }
-                }
 
-                return weinermobile;
+                        google.maps.event.addListener(marker, 'click', function() {
+                            infowindow.setContent(this.title);
+                            infowindow.open(map, this);
+                        });
+                        
+                    }
+
+                    dists[users.passengers[count].username] = google.maps.geometry.spherical.computeDistanceBetween(pos, me);
+                    
+                }
+                console.log(dists);
+
             }
 
             function renderMap() {
                 me = new google.maps.LatLng(myLat, myLng);
+                var weinerHere = "The Weinermobile is nowhere to be found...";
 
                 // Update map and go there...
                 map.panTo(me);
                 
 
-                var weinerHere = getRideInfo();
-                // if weinerhere get distance
-                // get closest (p/v) name + distance
+                getRideInfo();
+                if (dists["WEINERMOBILE"]) {
+                    weinerhere = "The Weinermobile is " + dists["WEINERMOBILE"] + "meters away!";
+                }
 
-                //if weinerhere print both dists
-                //if no weiner just print closest user
+                var closestUser = "the closest user is " + findClosest() + " meters away.";
 
-                // Create a marker
+                contentString = closestUser + "</br>" + weinerHere;
                 marker = new google.maps.Marker({
                     position: me,
                     icon: "egg.png",
@@ -151,12 +183,23 @@
                     
                 // Open info window on click of marker
                 google.maps.event.addListener(marker, 'click', function() {
-                    infowindow.setContent(marker.title);
-                    infowindow.open(map, marker);
+                    infowindow.setContent(contentString);
+                    infowindow.open(map, this);
                 });
-
-                
             }
+
+            function findClosest() {
+                var close = 999999;
+
+                for (count = 0; count < dists.length; count++) {
+                    if (dists[count] < close) {
+                        close = dists[count];
+                    }
+                }
+
+                return close;
+            }
+
         </script>
     </head>
     
