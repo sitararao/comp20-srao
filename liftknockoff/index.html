@@ -160,15 +160,14 @@
             }
 
             function renderMap() {
+                // create your own position
                 me = new google.maps.LatLng(myLat, myLng);
-                var weinerHere = "The Weinermobile is nowhere to be found...";
 
                 // Update map and go there...
                 map.panTo(me);
                 
 
-                //getRideInfo();
-
+                //instantiate request
                 var request = new XMLHttpRequest();
 
                 // make request and set header
@@ -257,20 +256,27 @@
                             }
                         }
 
+                        // check if weinermobile in distances list
+                        // if it is, update your info window to show how far
+                        var weinerHere = "The Weinermobile is nowhere to be found...";
                         if (dists["WEINERMOBILE"] != undefined) {
                             weinerHere = "The Weinermobile is " + dists["WEINERMOBILE"] + "meters away!";
                         }
 
+                        // store lowest value in distances object
+                        // display in info window as closest user
                         var close = 9999999;
                         for (var key in dists) {
                             if (dists[key] < close) {
                                 close = dists[key];
                             }
                         }
-
                         var closestUser = "The closest user is " + close + " meters away.";
 
+                        // string containing both weinermobile and closest user info
                         contentString = closestUser + "</br>" + weinerHere;
+
+                        // create your marker
                         marker = new google.maps.Marker({
                             position: me,
                             icon: "egg.png",
@@ -279,6 +285,7 @@
                         marker.setMap(map);
                             
                         // Open info window on click of marker
+                        // shows weinermobile here or not and distance of closest user
                         google.maps.event.addListener(marker, 'click', function() {
                             infowindow.setContent(contentString);
                             infowindow.open(map, this);
