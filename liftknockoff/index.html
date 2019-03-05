@@ -182,8 +182,12 @@
 
                         if (users.vehicles) {
                             for (count = 0; count < users.vehicles.length; count++) {
+
                                 if (users.vehicles[count].username == "WEINERMOBILE") {
                                     pos = new google.maps.LatLng(users.vehicles[count].lat, users.vehicles[count].lng);
+                                    var metersAway = google.maps.geometry.spherical.computeDistanceBetween(pos, me);
+                                    var milesAway = metersAway / 1609.344;
+
                                     marker = new google.maps.Marker({
                                         position: pos,
                                         icon: "weinermobile.png",
@@ -192,13 +196,15 @@
                                     marker.setMap(map);                        
 
                                     google.maps.event.addListener(marker, 'click', function() {
-                                        infowindow.setContent(this.title);
+                                        infowindow.setContent(this.title + "</br>" + dists[this.title] + " miles away");
                                         infowindow.open(map, this);
                                     });                        
                                 }
 
                                 else {
                                     pos = new google.maps.LatLng(users.vehicles[count].lat, users.vehicles[count].lng);
+                                    var metersAway = google.maps.geometry.spherical.computeDistanceBetween(pos, me);
+                                    var milesAway = metersAway / 1609.344;
                                     marker = new google.maps.Marker({
                                         position: pos,
                                         icon: "car.png",
@@ -207,12 +213,12 @@
                                     marker.setMap(map);
 
                                     google.maps.event.addListener(marker, 'click', function() {
-                                        infowindow.setContent(this.title);
+                                        infowindow.setContent(this.title + "</br>" + dists[this.title] + " miles away");
                                         infowindow.open(map, this);
                                     }); 
                                 }
 
-                                dists[users.vehicles[count].username] = google.maps.geometry.spherical.computeDistanceBetween(pos, me);
+                                dists[users.vehicles[count].username] = milesAway;
                             }
                             console.log(dists);
                             console.log(dists["WEINERMOBILE"]);
@@ -222,6 +228,8 @@
                             for (count = 0; count < users.passengers.length; count++) {
                                 if (users.passengers[count].username == "WEINERMOBILE") {
                                     pos = new google.maps.LatLng(users.passengers[count].lat, users.passengers[count].lng);
+                                    var metersAway = google.maps.geometry.spherical.computeDistanceBetween(pos, me);
+                                    var milesAway = metersAway / 1609.344;
                                     marker = new google.maps.Marker({
                                         position: pos,
                                         icon: "weinermobile.png",
@@ -230,13 +238,15 @@
                                     marker.setMap(map);                        
 
                                     google.maps.event.addListener(marker, 'click', function() {
-                                        infowindow.setContent(this.title);
+                                        infowindow.setContent(this.title + "</br>" + dists[this.title] + " miles away");
                                         infowindow.open(map, this);
                                     });                        
                                 }
 
                                 else {
                                     pos = new google.maps.LatLng(users.passengers[count].lat, users.passengers[count].lng);
+                                    var metersAway = google.maps.geometry.spherical.computeDistanceBetween(pos, me);
+                                    var milesAway = metersAway / 1609.344;
                                     marker = new google.maps.Marker({
                                         position: pos,
                                         icon: "bacon.png",
@@ -245,7 +255,7 @@
                                     marker.setMap(map);
 
                                     google.maps.event.addListener(marker, 'click', function() {
-                                        infowindow.setContent(this.title);
+                                        infowindow.setContent(this.title + "</br>" + dists[this.title] + " miles away");
                                         infowindow.open(map, this);
                                     });
                                     
@@ -260,7 +270,7 @@
                         // if it is, update your info window to show how far
                         var weinerHere = "The Weinermobile is nowhere to be found...";
                         if (dists["WEINERMOBILE"] != undefined) {
-                            weinerHere = "The Weinermobile is " + dists["WEINERMOBILE"] + "meters away!";
+                            weinerHere = "The Weinermobile is " + dists["WEINERMOBILE"] + " miles away!";
                         }
 
                         // store lowest value in distances object
@@ -271,7 +281,7 @@
                                 close = dists[key];
                             }
                         }
-                        var closestUser = "The closest user is " + close + " meters away.";
+                        var closestUser = "The closest user is " + close + " miles away.";
 
                         // string containing both weinermobile and closest user info
                         contentString = closestUser + "</br>" + weinerHere;
