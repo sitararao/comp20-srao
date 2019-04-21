@@ -6,7 +6,6 @@
         background-image: url(homer.jpg);
         background-position: 0 0;
         background-size: 200%;
-        display:block;
     }
 }
 
@@ -17,7 +16,6 @@
         background-image: url(homer.jpg);
         background-position: 100% 0;
         background-size: 200%;
-        display:block;
     }
 }
 
@@ -28,7 +26,6 @@
         background-image: url(homer.jpg);
         background-position: 0 100%;
         background-size: 200%;
-        display:block;
     }
 }
 
@@ -39,7 +36,6 @@
         background-image: url(homer.jpg);
         background-position: 100% 100%;
         background-size: 200%;
-        display:block;
     }
 }
 
@@ -50,7 +46,6 @@
         background-image: url(homer.jpg);
         background-position: 0 100%;
         background-size: 200%;
-        display:block;
     }
 }
 
@@ -61,7 +56,6 @@
         background-image: url(homer.jpg);
         background-position: 100% 0;
         background-size: 200%;
-        display:block;
     }
 }
 
@@ -72,6 +66,5 @@
         background-image: url(homer.jpg);
         background-position: 0 0;
         background-size: 200%;
-        display:block;
     }
 }
