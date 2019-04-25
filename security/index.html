@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8" />
+        <title>Security & Privacy Assessment</title>
+        <link rel="stylesheet" href="style.css" type="text/css" />
+    </head>
+
+    <body>
+        <h1>Introduction</h1>
+        <p>This product is a web application that triangulates the user's location and, when sent user info via HTTP POST, returns a list of passengers or vehicles that have visited the server via HTTP POST within the last 3 minutes. This JSON response is then interpreted, with each vehicle (or passenger, if the user is a vehicle) shown on the map as a marker with an info window. The back end of this application consists of a node.js server that communicates with a MongoDB database to store and retrieve information about passengers and vehicles.</p>
+
+        <ul>
+        <li>Accessing the server via HTTP GET returns an HTML home page with a list of every vehicle in the database, the time at which they last POSTed, and where they were at the time of the POST request.</li>
+
+        <li>Accessing the server via HTTP GET /passenger.json using a request query string of username=x returns all instances of a passenger with that username existing in the database. If there are multiple instances, they are returned in a list. If there are no matching passengers in the database, an empty list is returned.</li>
+
+        <li>POSTing to the server requires a request body with 3 parameters: username, latitude, and longitude. The request username is checked against a pre-determined list of vehicles, then stored accordingly in either the vehicle or passenger collection in the database along with the latitude, longitude, and time of check-in. All users from the other collection who have checked in within the last 3 minutes are then returned in the response as a JSON object.</li>
+        </ul>
+
+        <p>My goal is to find as many security vulnerabilities as I can in this program, in particular with the node.js server GET and POST routes. I am looking for potential XSS attacks, injection attacks, and any other weaknesses that lead to unexpected behavior in the process described above.</p>
+
+
+        <h1>Methodology</h1>
+        <p>I began with some black-box testing, without looking at the source code of the server. I tried sending malicious data to the server via GET and POST in order to make the GET routes send me back more data than intended; I was not able to do so without looking at the code. Some such attacks I tried were:</p>
+
+        <ul>
+            <li>Injection of GET /passenger.json with username[$ne]=</li>
+            <li>Injection of GET /passenger.json with username[$gt]=s</li>
+            <li>XSSing POST data to execute a JS alert(); to execute I both sent script as a vehicle's lat to display on the browser in GET / and sent script as a passenger's username to see if it would execute upon connecting my assignment 2 as a vehicle and loading passengers to display on the map. Neither happened.</li>
+            <li></li>
+        </ul>
+
+        <p>Next, I took a look at the code for Colton's server to see if I could identify vulnerabilities there. I did not notice anything glaring on my own, and was able to see why my previous attack methods were being successfully avoided. Next I downloaded some tools (ZAP and BurpSuite) to help.</p>
+
+        <p>Using OWASP ZAP, I was able to find multiple potential vulnerabilities. These were related to ClickJacking attacks, Mime-sniffing, and XSS. I read up on the first 2 to see if I could execute them successfully, but I was not able to do so.</p>
+
+
+        <p>3 thoughts: Access control origin *; hard coded vehicles list; distributing vehicle locations (personal info) without user authentification</p>
+
+        <h1>Abstraction of Findings</h1>
+        <p></p>
+
+        <h1>Issues Found</h1>
+        <p></p>
+
+        <h1>Conclusion</h1>
+        <p></p>
+
+        <h1>References</h1>
+        <p></p>
+
+    </body>
+
+</html>
