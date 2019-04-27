@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
     <head>
         <meta charset="utf-8" />
@@ -32,18 +32,49 @@
             <li></li>
         </ul>
 
-        <p>Next, I took a look at the code for Colton's server to see if I could identify vulnerabilities there. I did not notice anything glaring on my own, and was able to see why my previous attack methods were being successfully avoided. Next I downloaded some tools (ZAP and BurpSuite) to help.</p>
+        <p>Next, I took a look at the code for Colton's server to see if I could identify vulnerabilities there. In doing so I was able to see why my previous attack methods were being successfully avoided. Next I downloaded the OWASP ZAP tool to help.</p>
 
-        <p>Using OWASP ZAP, I was able to find multiple potential vulnerabilities. These were related to ClickJacking attacks, Mime-sniffing, and XSS. I read up on the first 2 to see if I could execute them successfully, but I was not able to do so.</p>
+        <p>Using OWASP ZAP alerted me of the presence of multiple potential vulnerabilities. These were related to ClickJacking attacks, Mime-sniffing, and XSS. I read up on the first 2 to see if I could execute them successfully, but I was not able to do so. While I was not able to take advabtage of them myself, they are still security issues that should be addressed and I will elaborate on how to do so.</p>
 
+        <p>My final stage of assessment was qualitative. I looked at the OWASP Top 10 list to come up with 3 potential design flaws which I will go into more detail about later in this report: Cross Origin Resource Sharing, hardcoded data, and dissemination of user info without proper authentification.</p>
 
-        <p>3 thoughts: Access control origin *; hard coded vehicles list; distributing vehicle locations (personal info) without user authentification</p>
 
         <h1>Abstraction of Findings</h1>
         <p></p>
 
         <h1>Issues Found</h1>
-        <p></p>
+
+        <h3>Issue 1: CORS enabled with Access-Control-Allow-Origin *</h3>
+        <p> &emsp; Location: index.js GET and POST response headers
+        <br> &emsp; Severity: High. Could allow untrusted sources to access sensitive information, such as locations of every passenger/vehicle in the last 3 minutes.
+        <br> &emsp; Description: 
+        <br> &emsp; Resolution: 
+        </p>
+
+        <h3>Issue 2: Hardcoded vehicles list</h3>
+        <p> &emsp; Location: index.js variable vehicles[]
+        <br> &emsp; Severity: Medium. Hardcoding could allow anyone who gains access to the code the ability to view and manipulate the vehicle names. This is why we never hardcode passwords.
+        <br> &emsp; Description: 
+        <br> &emsp; Resolution: 
+        </p>
+
+        <h3>Issue 3: Dissemination of user information without authentification</h3>
+        <p> &emsp; Location: GET / route
+        <br> &emsp; Severity: High. No login is needed to access a complete list of drivers and locations in the last 3 minutes, simply by navigating to the server URL on any browser. This is a significant privacy concern.
+        <br> &emsp; Description: 
+        <br> &emsp; Resolution: Consider removing this functionality, or requiring users to log in (for example to confirm administrator status) before allowing access to this data.
+        </p>
+
+
+<!-- 
+Issue (e.g., database injection, really bad programming practice)
+Location or page where issue was found
+Severity of issue (e.g., low, medium , or high). Justify your answer.
+Description of issue. How did you find it? A screenshot of problem is excellent.
+Proof of vulnerability. Show pictures or it didn't happen.
+Resolution. Make recommendation(s) on how issue can be resolved. Show code if possible. -->
+
+
 
         <h1>Conclusion</h1>
         <p></p>
