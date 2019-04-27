@@ -8,3 +8,7 @@ body {
 li {
     margin: 20px 0;
 }
+
+div p {
+    padding-left: 40px;
+}

@@ -12,11 +12,11 @@
         <p>This product is a web application that triangulates the user's location and, when sent user info via HTTP POST, returns a list of passengers or vehicles that have visited the server via HTTP POST within the last 3 minutes. This JSON response is then interpreted, with each vehicle (or passenger, if the user is a vehicle) shown on the map as a marker with an info window. The back end of this application consists of a node.js server that communicates with a MongoDB database to store and retrieve information about passengers and vehicles.</p>
 
         <ul>
-        <li>Accessing the server via HTTP GET returns an HTML home page with a list of every vehicle in the database, the time at which they last POSTed, and where they were at the time of the POST request.</li>
+            <li>Accessing the server via HTTP GET returns an HTML home page with a list of every vehicle in the database, the time at which they last POSTed, and where they were at the time of the POST request.</li>
 
-        <li>Accessing the server via HTTP GET /passenger.json using a request query string of username=x returns all instances of a passenger with that username existing in the database. If there are multiple instances, they are returned in a list. If there are no matching passengers in the database, an empty list is returned.</li>
+            <li>Accessing the server via HTTP GET /passenger.json using a request query string of username=x returns all instances of a passenger with that username existing in the database. If there are multiple instances, they are returned in a list. If there are no matching passengers in the database, an empty list is returned.</li>
 
-        <li>POSTing to the server requires a request body with 3 parameters: username, latitude, and longitude. The request username is checked against a pre-determined list of vehicles, then stored accordingly in either the vehicle or passenger collection in the database along with the latitude, longitude, and time of check-in. All users from the other collection who have checked in within the last 3 minutes are then returned in the response as a JSON object.</li>
+            <li>POSTing to the server requires a request body with 3 parameters: username, latitude, and longitude. The request username is checked against a pre-determined list of vehicles, then stored accordingly in either the vehicle or passenger collection in the database along with the latitude, longitude, and time of check-in. All users from the other collection who have checked in within the last 3 minutes are then returned in the response as a JSON object.</li>
         </ul>
 
         <p>My goal is to find as many security vulnerabilities as I can in this program, in particular with the node.js server GET and POST routes. I am looking for potential XSS attacks, injection attacks, and any other weaknesses that lead to unexpected behavior in the process described above.</p>
@@ -34,7 +34,7 @@
 
         <p>Next, I took a look at the code for Colton's server to see if I could identify vulnerabilities there. In doing so I was able to see why my previous attack methods were being successfully avoided. Next I downloaded the OWASP ZAP tool to help.</p>
 
-        <p>Using OWASP ZAP alerted me of the presence of multiple potential vulnerabilities. These were related to ClickJacking attacks, Mime-sniffing, and XSS. I read up on the first 2 to see if I could execute them successfully, but I was not able to do so. While I was not able to take advabtage of them myself, they are still security issues that should be addressed and I will elaborate on how to do so.</p>
+        <p>Using OWASP ZAP alerted me of the presence of multiple potential vulnerabilities. These were related to ClickJacking attacks, Mime-sniffing, and XSS. I read up on the first 2 to see if I could execute them successfully, but I was not able to do so. While I was not able to take advantage of them myself, they are still security issues that should be addressed and I will elaborate on how to do so.</p>
 
         <p>My final stage of assessment was qualitative. I looked at the OWASP Top 10 list to come up with 3 potential design flaws which I will go into more detail about later in this report: Cross Origin Resource Sharing, hardcoded data, and dissemination of user info without proper authentification.</p>
 
@@ -44,26 +44,28 @@
 
         <h1>Issues Found</h1>
 
-        <h3>Issue 1: CORS enabled with Access-Control-Allow-Origin *</h3>
-        <p> &emsp; Location: index.js GET and POST response headers
-        <br> &emsp; Severity: High. Could allow untrusted sources to access sensitive information, such as locations of every passenger/vehicle in the last 3 minutes.
-        <br> &emsp; Description: 
-        <br> &emsp; Resolution: 
-        </p>
+        <div>
+            <h3>Issue 1: CORS enabled with Access-Control-Allow-Origin *</h3>
+            <p>Location: index.js GET and POST response headers
+            <br>Severity: High. Could allow untrusted sources to access sensitive information, such as locations of every passenger/vehicle in the last 3 minutes.
+            <br>Description: 
+            <br>Resolution: 
+            </p>
 
-        <h3>Issue 2: Hardcoded vehicles list</h3>
-        <p> &emsp; Location: index.js variable vehicles[]
-        <br> &emsp; Severity: Medium. Hardcoding could allow anyone who gains access to the code the ability to view and manipulate the vehicle names. This is why we never hardcode passwords.
-        <br> &emsp; Description: 
-        <br> &emsp; Resolution: 
-        </p>
+            <h3>Issue 2: Hardcoded vehicles list</h3>
+            <p>Location: index.js variable vehicles[]
+            <br>Severity: Medium. Hardcoding could allow anyone who gains access to the code the ability to view and manipulate the vehicle names. This is why we never hardcode passwords.
+            <br>Description: 
+            <br>Resolution: Use a strong hash to store vehicle names instead; then hash each POSTed username to determine if user is a vehicle or passenger.
+            </p>
 
-        <h3>Issue 3: Dissemination of user information without authentification</h3>
-        <p> &emsp; Location: GET / route
-        <br> &emsp; Severity: High. No login is needed to access a complete list of drivers and locations in the last 3 minutes, simply by navigating to the server URL on any browser. This is a significant privacy concern.
-        <br> &emsp; Description: 
-        <br> &emsp; Resolution: Consider removing this functionality, or requiring users to log in (for example to confirm administrator status) before allowing access to this data.
-        </p>
+            <h3>Issue 3: Dissemination of user information without authentification</h3>
+            <p>Location: GET / route
+            <br>Severity: High. No login is needed to access a complete list of drivers and locations in the last 3 minutes, simply by navigating to the server URL on any browser. This is a significant privacy concern.
+            <br>Description: 
+            <br>Resolution: Consider removing this functionality, or requiring users to log in (for example to confirm administrator status) before allowing access to this data.
+            </p>
+        </div>
 
 
 <!-- 
@@ -75,12 +77,20 @@ Proof of vulnerability. Show pictures or it didn't happen.
 Resolution. Make recommendation(s) on how issue can be resolved. Show code if possible. -->
 
 
-
         <h1>Conclusion</h1>
-        <p></p>
+        <p>While I do not possess the capabilities to actually hack this program myself, I have identified several areas that are weak in design. If another more capable individual were to gain access to this program, they would be able to exploit it in the ways enumerated above.</p>
 
         <h1>References</h1>
-        <p></p>
+        <ul>
+            <li><a href="https://www.owasp.org/index.php/OWASP_Top_Ten_Cheat_Sheet">OWASP Top 10 Cheat Sheet</a></li>
+            <li><a href="https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project">OWASP ZAP</a></li>
+            <li><a href="https://chrisdecairos.ca/intercepting-traffic-with-zaproxy/">ZAP Tutorial</a></li>
+            <li><a href="https://blogs.msdn.microsoft.com/ieinternals/2010/03/30/combating-clickjacking-with-x-frame-options/">ClickJacking Combat</a></li>
+            <li><a href="https://www.cse.wustl.edu/~jain/cse571-07/ftp/xsscript/index.html#sec2">XSS types description</a></li>
+            <li><a href="https://www.owasp.org/index.php/Testing_for_NoSQL_injection">NoSQL Injection Testing Guide</a></li>
+            <li><a href="https://blog.websecurify.com/2014/08/hacking-nodejs-and-mongodb.html">NoSQL Injection How-To</a></li>
+
+        </ul>
 
     </body>
 
