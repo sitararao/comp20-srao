@@ -12,3 +12,8 @@ li {
 div p {
     padding-left: 40px;
 }
+
+img {
+    max-width: 100%;
+    height: auto;
+}

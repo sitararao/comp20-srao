@@ -27,14 +27,13 @@
 
         <ul>
             <li>Injection of GET /passenger.json with username[$ne]=</li>
-            <li>Injection of GET /passenger.json with username[$gt]=s</li>
+            <li>Injection of GET /passenger.json with username[$gt]=</li>
             <li>XSSing POST data to execute a JS alert(); to execute I both sent script as a vehicle's lat to display on the browser in GET / and sent script as a passenger's username to see if it would execute upon connecting my assignment 2 as a vehicle and loading passengers to display on the map. Neither happened.</li>
-            <li></li>
         </ul>
 
-        <p>Next, I took a look at the code for Colton's server to see if I could identify vulnerabilities there. In doing so I was able to see why my previous attack methods were being successfully avoided. Next I downloaded the OWASP ZAP tool to help.</p>
+        <p>Next, I took a look at the code for Colton's server to see if I could identify vulnerabilities there. In doing so I was able to see why my previous attack methods were being successfully avoided. In returning usernames the server checks to make sure that the input and returned usernames match, which is why my injection of MongoDB operators like [$ne] and [$gt] were failing. In storing lat and lng, the server converts inputs to numbers so sending malicious script this way causes them to be stored as NaN.</p>
 
-        <p>Using OWASP ZAP alerted me of the presence of multiple potential vulnerabilities. These were related to ClickJacking attacks, Mime-sniffing, and XSS. I read up on the first 2 to see if I could execute them successfully, but I was not able to do so. While I was not able to take advantage of them myself, they are still security issues that should be addressed and I will elaborate on how to do so.</p>
+        <p>Next I downloaded the OWASP ZAP tool to help. Using ZAP alerted me of the presence of multiple potential vulnerabilities. These were related to ClickJacking attacks, Mime-sniffing, and XSS. I read up on the first 2 to see if I could execute them successfully, but I was not able to do so. While I was not able to take advantage of them myself, they are still security issues that should be addressed and I will elaborate on how to do so.</p>
 
         <p>My final stage of assessment was qualitative. I looked at the OWASP Top 10 list to come up with 3 potential design flaws which I will go into more detail about later in this report: Cross Origin Resource Sharing, hardcoded data, and dissemination of user info without proper authentification.</p>
 
@@ -48,33 +47,30 @@
             <h3>Issue 1: CORS enabled with Access-Control-Allow-Origin *</h3>
             <p>Location: index.js GET and POST response headers
             <br>Severity: High. Could allow untrusted sources to access sensitive information, such as locations of every passenger/vehicle in the last 3 minutes.
-            <br>Description: 
-            <br>Resolution: 
+            <br>Description:
+            <br>
+            <img src="images/Header1.png" alt="CORS Response Header"\>
+            <img src="images/Header2.png" alt="CORS Response Header"\>
+            <img src="images/Header3.png" alt="CORS Response Header"\> 
+            <br>Resolution: Specify the domain(s) which should be allowed to access these routes.
             </p>
 
             <h3>Issue 2: Hardcoded vehicles list</h3>
             <p>Location: index.js variable vehicles[]
             <br>Severity: Medium. Hardcoding could allow anyone who gains access to the code the ability to view and manipulate the vehicle names. This is why we never hardcode passwords.
             <br>Description: 
-            <br>Resolution: Use a strong hash to store vehicle names instead; then hash each POSTed username to determine if user is a vehicle or passenger.
+            <br> <img src="images/vehiclesList.png" alt="CORS Response Header"\>
+            <br>Resolution: Use a strong hash to store vehicle names instead; then hash each POSTed username to determine if vehicle or passenger.
             </p>
 
             <h3>Issue 3: Dissemination of user information without authentification</h3>
             <p>Location: GET / route
             <br>Severity: High. No login is needed to access a complete list of drivers and locations in the last 3 minutes, simply by navigating to the server URL on any browser. This is a significant privacy concern.
             <br>Description: 
+            <br> <img src="images/UserInfo.png" alt="CORS Response Header"\>
             <br>Resolution: Consider removing this functionality, or requiring users to log in (for example to confirm administrator status) before allowing access to this data.
             </p>
         </div>
-
-
-<!-- 
-Issue (e.g., database injection, really bad programming practice)
-Location or page where issue was found
-Severity of issue (e.g., low, medium , or high). Justify your answer.
-Description of issue. How did you find it? A screenshot of problem is excellent.
-Proof of vulnerability. Show pictures or it didn't happen.
-Resolution. Make recommendation(s) on how issue can be resolved. Show code if possible. -->
 
 
         <h1>Conclusion</h1>
@@ -89,9 +85,7 @@ Resolution. Make recommendation(s) on how issue can be resolved. Show code if po
             <li><a href="https://www.cse.wustl.edu/~jain/cse571-07/ftp/xsscript/index.html#sec2">XSS types description</a></li>
             <li><a href="https://www.owasp.org/index.php/Testing_for_NoSQL_injection">NoSQL Injection Testing Guide</a></li>
             <li><a href="https://blog.websecurify.com/2014/08/hacking-nodejs-and-mongodb.html">NoSQL Injection How-To</a></li>
-
         </ul>
 
     </body>
-
 </html>
