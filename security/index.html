@@ -49,9 +49,9 @@
             <br>Severity: High. Could allow untrusted sources to access sensitive information, such as locations of every passenger/vehicle in the last 3 minutes.
             <br>Description:
             <br>
-            <img src="images/Header1.png" alt="CORS Response Header"\>
-            <img src="images/Header2.png" alt="CORS Response Header"\>
-            <img src="images/Header3.png" alt="CORS Response Header"\> 
+            <img src="images/Header1.png" alt="CORS Response Header">
+            <img src="images/Header2.png" alt="CORS Response Header">
+            <img src="images/Header3.png" alt="CORS Response Header"> 
             <br>Resolution: Specify the domain(s) which should be allowed to access these routes.
             </p>
 
@@ -59,7 +59,7 @@
             <p>Location: index.js variable vehicles[]
             <br>Severity: Medium. Hardcoding could allow anyone who gains access to the code the ability to view and manipulate the vehicle names. This is why we never hardcode passwords.
             <br>Description: 
-            <br> <img src="images/vehiclesList.png" alt="CORS Response Header"\>
+            <br> <img src="images/vehiclesList.png" alt="CORS Response Header">
             <br>Resolution: Use a strong hash to store vehicle names instead; then hash each POSTed username to determine if vehicle or passenger.
             </p>
 
@@ -67,7 +67,7 @@
             <p>Location: GET / route
             <br>Severity: High. No login is needed to access a complete list of drivers and locations in the last 3 minutes, simply by navigating to the server URL on any browser. This is a significant privacy concern.
             <br>Description: 
-            <br> <img src="images/UserInfo.png" alt="CORS Response Header"\>
+            <br> <img src="images/UserInfo.png" alt="CORS Response Header">
             <br>Resolution: Consider removing this functionality, or requiring users to log in (for example to confirm administrator status) before allowing access to this data.
             </p>
         </div>
