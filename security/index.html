@@ -39,7 +39,7 @@
 
 
         <h1>Abstraction of Findings</h1>
-        <p></p>
+        <p>The issues I found in this code are largely related to the design of the application rather than technical minutia. With a tool that takes in personal data like users' locations and when they were "last seen," we want to be sure that we are handling and storing data carefully so as not to allow arbitrary users access and/or manipulate it. I would reconsider (1) who is allowed to send and retrieve data (currently everyone), (2) explicitly storing the usernames of vehicles in the server (I recommend encryption), and (3) the current functionality of the home page, at least as it is now with no login required to see all of the vehicle drivers' data.</p>
 
         <h1>Issues Found</h1>
 
